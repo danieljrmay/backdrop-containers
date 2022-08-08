@@ -1,0 +1,13 @@
+[Unit]
+Description=Configure httpd and mariadb for backdrop on first boot
+After=mariadb.service
+Before=backdrop-install.service httpd.service
+ConditionPathExists=!/var/lock/backdrop-add-on-dev-fedora-firstboot.lock
+
+[Service]
+Type=oneshot
+EnvironmentFile=/run/secrets/backdrop-add-on-dev-fedora
+ExecStart=/usr/local/bin/backdrop-add-on-dev-fedora-firstboot
+
+[Install]
+WantedBy=multi-user.target
