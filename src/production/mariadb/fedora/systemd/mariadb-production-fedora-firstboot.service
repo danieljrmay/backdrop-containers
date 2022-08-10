@@ -1,0 +1,12 @@
+[Unit]
+Description=Configure mariadb for production
+After=mariadb.service
+ConditionPathExists=!/var/lock/mariadb-production-fedora-firstboot.lock
+
+[Service]
+Type=oneshot
+EnvironmentFile=/run/secrets/mariadb-production-fedora
+ExecStart=/usr/local/bin/mariadb-production-fedora-firstboot
+
+[Install]
+WantedBy=multi-user.target

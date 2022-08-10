@@ -1,0 +1,8 @@
+[Unit]
+Description=Perform routine mariadb maintenance
+Requires=mariadb.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/run/secrets/mariadb-production-fedora
+ExecStart=/usr/local/bin/mariadb-production-fedora-maintenance
