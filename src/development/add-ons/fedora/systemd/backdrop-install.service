@@ -2,6 +2,7 @@
 Description=Install a backdrop site
 After=backdrop-add-on-dev-fedora-firstboot.service
 Before=httpd.service
+ConditionPathExists=!/var/lib/backdrop/private_files/backdrop-install.lock
 
 [Service]
 Type=oneshot

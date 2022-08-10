@@ -4,11 +4,13 @@
 #
 # Author: Daniel J. R. May
 #
-# This script deletes the container image of backdrop suitable for
-# add-on development on top of the latest fedora base image.
+# This script deletes the container image.
 #
 # For more information (or to report issues) go to
 # https://github.com/danieljrmay/backdrop-containers
+
+# Exit immediately if any command fails.
+set -e
 
 # Set the default environment file path. This syntax allows this
 # default value to be overridden by an environment variable set before
@@ -16,6 +18,7 @@
 : "${ENVIRONMENT_FILE:=backdrop-add-on-dev-fedora.env}"
 
 # Echo the environment file used by this script.
+echo -e "Variables used by $(basename "$0"):\n"
 echo "ENVIRONMENT_FILE=$ENVIRONMENT_FILE"
 
 # Source the environment file.

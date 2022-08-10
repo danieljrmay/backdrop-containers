@@ -12,10 +12,13 @@
 # For more information (or to report issues) go to
 # https://github.com/danieljrmay/backdrop-containers
 
+# Exit immediately on error.
+set -e
 
-declare -r identifier='backdrop-add-on-dev-fedora-firstboot'
-declare -r lock_path='/var/lock/backdrop-add-on-dev-fedora-firstboot.lock'
-declare -r httpd_conf_path='/etc/httpd/conf.d/backdrop-add-on-dev-fedora.conf'
+# Readonly variables used by this script.
+declare -r identifier=backdrop-add-on-dev-fedora-firstboot
+declare -r lock_path=/var/lock/backdrop-add-on-dev-fedora-firstboot.lock
+declare -r httpd_conf_path=/etc/httpd/conf.d/backdrop-add-on-dev-fedora.conf
 
 # Check that this script has not already run, by checking for a lock
 # file.
@@ -23,24 +26,10 @@ if [ -f "$lock_path" ]; then
 	systemd-cat --identifier=$identifier --priority=warning \
 		echo "Lock file $lock_path already exists, exiting."
 	exit 1
-else
-	(
-		touch $lock_path &&
-			systemd-cat \
-				--identifier=$identifier \
-				echo "Created $lock_path to prevent the re-running of this script."
-	) || (
-		systemd-cat \
-			--identifier=$identifier \
-			--priority=error \
-			echo "Failed to create $lock_path so exiting." &&
-			exit 1
-	)
 fi
 
-
 # Create the Apache HTTPD server configuration file.
-cat > $httpd_conf_path <<EOF
+cat >$httpd_conf_path <<EOF
 # Apache HTTP server configuration for the the
 # backdrop-add-on-dev-fedora container image.
 #
@@ -72,7 +61,6 @@ else
 	exit 3
 fi
 
-
 # Create and configure a database for backdrop.
 sql=$(
 	cat <<EOF
@@ -94,10 +82,9 @@ else
 	exit 3
 fi
 
-
 # Add trusted hosts to the settings.php file.
 settings_appendages=$(
-        cat <<EOF
+	cat <<EOF
 
 /**
  * Added by the backdrop-install systemd service.
@@ -110,14 +97,27 @@ settings_appendages=$(
 EOF
 )
 
-if (echo "$settings_appendages" >> /etc/backdrop/settings.php); then
-        systemd-cat \
-                --identifier=$identifier \
-                echo "Updated the settings.php file."
+if (echo "$settings_appendages" >>/etc/backdrop/settings.php); then
+	systemd-cat \
+		--identifier=$identifier \
+		echo "Updated the settings.php file."
 else
-        systemd-cat \
-                --identifier=$identifier \
-                --priority=error \
-                echo "Failed to update the settings.php file."
-        exit 1
+	systemd-cat \
+		--identifier=$identifier \
+		--priority=error \
+		echo "Failed to update the settings.php file."
+	exit 1
+fi
+
+# Create a lock file to prevent re-running this script.
+if touch $lock_path; then
+	systemd-cat \
+		--identifier=$identifier \
+		echo "Created $lock_path to prevent the re-running of this script."
+else
+	systemd-cat \
+		--identifier=$identifier \
+		--priority=error \
+		echo "Failed to create $lock_path so exiting."
+	exit 1
 fi

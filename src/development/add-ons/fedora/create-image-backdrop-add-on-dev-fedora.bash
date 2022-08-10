@@ -10,12 +10,16 @@
 # For more information (or to report issues) go to
 # https://github.com/danieljrmay/backdrop-containers
 
+# Exit immediately if any command fails.
+set -e
+
 # Set the default environment file path. This syntax allows this
 # default value to be overridden by an environment variable set before
 # this script executes.
 : "${ENVIRONMENT_FILE:=backdrop-add-on-dev-fedora.env}"
 
 # Echo the environment file used by this script.
+echo -e "Variables used by $(basename "$0"):\n"
 echo "ENVIRONMENT_FILE=$ENVIRONMENT_FILE"
 
 # Source the environment file.
@@ -42,9 +46,9 @@ buildah from --name "$WORKING_CONTAINER" "$BASE_IMAGE"
 # Update the container and install all the packages we need.
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes update
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes install dnf-plugins-core
-buildah run "$WORKING_CONTAINER" -- dnf --assumeyes copr enable danieljrmay/backdrop 
+buildah run "$WORKING_CONTAINER" -- dnf --assumeyes copr enable danieljrmay/backdrop
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes install \
-        backdrop \
+	backdrop \
 	composer \
 	git \
 	wget \
@@ -53,20 +57,20 @@ buildah run "$WORKING_CONTAINER" -- dnf --assumeyes clean all
 
 # Copy files into working container.
 buildah copy "$WORKING_CONTAINER" \
-        systemd/backdrop-add-on-dev-fedora-firstboot.bash \
-        /usr/local/bin/backdrop-add-on-dev-fedora-firstboot
+	systemd/backdrop-add-on-dev-fedora-firstboot.bash \
+	/usr/local/bin/backdrop-add-on-dev-fedora-firstboot
 buildah run "$WORKING_CONTAINER" -- chmod a+x /usr/local/bin/backdrop-add-on-dev-fedora-firstboot
 buildah copy "$WORKING_CONTAINER" \
-        systemd/backdrop-add-on-dev-fedora-firstboot.service \
-        /etc/systemd/system/backdrop-add-on-dev-fedora-firstboot.service
+	systemd/backdrop-add-on-dev-fedora-firstboot.service \
+	/etc/systemd/system/backdrop-add-on-dev-fedora-firstboot.service
 
 buildah copy "$WORKING_CONTAINER" \
-        systemd/backdrop-install.bash \
-        /usr/local/bin/backdrop-install
+	systemd/backdrop-install.bash \
+	/usr/local/bin/backdrop-install
 buildah run "$WORKING_CONTAINER" -- chmod a+x /usr/local/bin/backdrop-install
 buildah copy "$WORKING_CONTAINER" \
-        systemd/backdrop-install.service \
-        /etc/systemd/system/backdrop-install.service
+	systemd/backdrop-install.service \
+	/etc/systemd/system/backdrop-install.service
 
 # Install bee.
 buildah run "$WORKING_CONTAINER" -- git clone https://github.com/backdrop-contrib/bee.git /opt/bee

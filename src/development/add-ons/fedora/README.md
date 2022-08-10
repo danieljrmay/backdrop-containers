@@ -23,6 +23,8 @@ Image has the following features:
   container.
 * Mounts your hosts custom themes development directory in the
   container.
+* No data is persisted, delete the container and all content,
+  configuration and uploaded files are gone!
 
 ## Usage
 
@@ -54,7 +56,7 @@ bash explore-container-backdrop-add-on-dev-fedora.bash
 
 You should be able to access and log in to your new backdrop site via
 a brower on your host machine by navigating to
-<http://localhost:40080>. The default administrator username is
+<http://localhost:40080>. The default site administrator username is
 `admin` with password `admin_pwd`.
 
 Once you have finished with your container you can delete it with
