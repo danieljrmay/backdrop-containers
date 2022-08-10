@@ -30,7 +30,7 @@ echo "CONTAINER=$CONTAINER"
 
 # Echo the commands as this script executes and exit immediately if
 # any command fails.
-set -ex
+set -x
 
 # Stop and remove the container.
 podman stop "$CONTAINER"

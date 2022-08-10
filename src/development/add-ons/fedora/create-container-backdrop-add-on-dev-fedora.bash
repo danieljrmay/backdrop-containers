@@ -54,7 +54,7 @@ echo "BACKDROP_SITE_MAIL=$BACKDROP_SITE_MAIL"
 echo "BACKDROP_SITE_NAME=$BACKDROP_SITE_NAME"
 echo
 
-# Create the secret variable, and create the secret.
+# Create the secret variable.
 secret=$(
 	cat <<EOF
 PORT=$PORT
@@ -74,8 +74,7 @@ BACKDROP_SITE_NAME=$BACKDROP_SITE_NAME
 EOF
 )
 
-# Echo the commands as this script executes and exit immediately if
-# any command fails.
+# Echo the commands as this script executes.
 set -x
 
 # Check base image exists.

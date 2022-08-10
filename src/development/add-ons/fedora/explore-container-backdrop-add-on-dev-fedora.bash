@@ -28,9 +28,8 @@ source "$ENVIRONMENT_FILE"
 # Echo the values of the variables used by this script.
 echo "CONTAINER=$CONTAINER"
 
-# Echo the commands as this script executes and exit immediately if
-# any command fails.
-set -ex
+# Echo the commands as this script executes.
+set -x
 
 # Execute bash in the container.
 podman exec --interactive --tty "$CONTAINER" /usr/bin/bash

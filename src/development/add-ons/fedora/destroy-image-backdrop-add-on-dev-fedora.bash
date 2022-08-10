@@ -28,9 +28,8 @@ source "$ENVIRONMENT_FILE"
 # Echo the values of the variables used by this script.
 echo "IMAGE_NAME=$IMAGE_NAME"
 
-# Echo the commands as this script executes and exit immediately if
-# any command fails.
-set -ex
+# Echo the commands as this script executes.
+set -x
 
 # Remove the container image.
 buildah rmi "$IMAGE_NAME"
