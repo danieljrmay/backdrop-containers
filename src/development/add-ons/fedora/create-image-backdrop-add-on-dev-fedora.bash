@@ -31,6 +31,7 @@ echo "BASE_IMAGE=$BASE_IMAGE"
 echo "IMAGE_NAME=$IMAGE_NAME"
 echo "WORKING_CONTAINER=$WORKING_CONTAINER"
 echo "CONTRIB_MODULES=${CONTRIB_MODULES[*]}"
+echo
 
 # Echo the commands as this script executes and exit immediately if
 # any command fails.

@@ -27,6 +27,7 @@ source "$ENVIRONMENT_FILE"
 
 # Echo the values of the variables used by this script.
 echo "IMAGE_NAME=$IMAGE_NAME"
+echo
 
 # Echo the commands as this script executes.
 set -x
