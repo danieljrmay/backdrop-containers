@@ -30,6 +30,7 @@ source "$ENVIRONMENT_FILE"
 echo "HIDE_PASSWORDS=$HIDE_PASSWORDS"
 echo "IMAGE=$IMAGE"
 echo "CONTAINER=$CONTAINER"
+echo "DATA_VOLUME=$DATA_VOLUME"
 echo "SECRET_NAME=$SECRET_NAME"
 echo "CONTAINER_HOSTNAME=$CONTAINER_HOSTNAME"
 if [ "$HIDE_PASSWORDS" = false ]; then
@@ -60,6 +61,11 @@ set -x
 # Check base image exists.
 podman image exists "$IMAGE"
 
+# Create the data volume if it does not exist.
+if ! podman volume exists "$DATA_VOLUME"; then
+	podman volume create "$DATA_VOLUME"
+fi
+
 # Remove any pre-existing secret, but do not error if no such secret
 # exists.
 podman secret rm "$SECRET_NAME" || true
@@ -71,9 +77,6 @@ set +x
 echo "Creating the $SECRET_NAME secret…"
 echo "$secret" | podman secret create "$SECRET_NAME" -
 set -x
-
-# Create the data volume.
-podman volume create "$DATA_VOLUME"
 
 # Create and start the container.
 podman run \
