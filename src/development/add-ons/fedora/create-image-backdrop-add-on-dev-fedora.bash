@@ -18,7 +18,8 @@ set -e
 # this script executes.
 : "${ENVIRONMENT_FILE:=backdrop-add-on-dev-fedora.env}"
 
-# Echo the environment file used by this script.
+# Echo the variables used by this script, starting with the
+# environment file.
 echo -e "Variables used by $(basename "$0"):\n"
 echo "ENVIRONMENT_FILE=$ENVIRONMENT_FILE"
 
@@ -52,6 +53,7 @@ buildah run "$WORKING_CONTAINER" -- dnf --assumeyes install \
 	backdrop \
 	composer \
 	git \
+	mariadb-server \
 	wget \
 	zip
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes clean all
