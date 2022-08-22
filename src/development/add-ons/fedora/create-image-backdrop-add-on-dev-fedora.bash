@@ -51,6 +51,7 @@ buildah run "$WORKING_CONTAINER" -- dnf --assumeyes install dnf-plugins-core
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes copr enable danieljrmay/backdrop
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes install \
 	backdrop \
+	backdrop-systemd \
 	composer \
 	git \
 	mariadb-server \
@@ -58,22 +59,12 @@ buildah run "$WORKING_CONTAINER" -- dnf --assumeyes install \
 	zip
 buildah run "$WORKING_CONTAINER" -- dnf --assumeyes clean all
 
-# Copy files into working container.
-buildah copy "$WORKING_CONTAINER" \
-	systemd/backdrop-add-on-dev-fedora-firstboot.bash \
-	/usr/local/bin/backdrop-add-on-dev-fedora-firstboot
-buildah run "$WORKING_CONTAINER" -- chmod a+x /usr/local/bin/backdrop-add-on-dev-fedora-firstboot
-buildah copy "$WORKING_CONTAINER" \
-	systemd/backdrop-add-on-dev-fedora-firstboot.service \
-	/etc/systemd/system/backdrop-add-on-dev-fedora-firstboot.service
-
-buildah copy "$WORKING_CONTAINER" \
-	systemd/backdrop-install.bash \
-	/usr/local/bin/backdrop-install
-buildah run "$WORKING_CONTAINER" -- chmod a+x /usr/local/bin/backdrop-install
-buildah copy "$WORKING_CONTAINER" \
-	systemd/backdrop-install.service \
-	/etc/systemd/system/backdrop-install.service
+# Create module/theme custom and contrib directories
+buildah run "$WORKING_CONTAINER" -- mkdir -p \
+	/usr/share/backdrop/modules/contrib \
+	/usr/share/backdrop/modules/custom \
+	/usr/share/backdrop/themes/contrib \
+	/usr/share/backdrop/themes/custom
 
 # Install bee.
 buildah run "$WORKING_CONTAINER" -- git clone https://github.com/backdrop-contrib/bee.git /opt/bee
@@ -86,7 +77,8 @@ buildah run "$WORKING_CONTAINER" -- bee --root=/usr/share/backdrop download "${C
 buildah run "$WORKING_CONTAINER" -- systemctl enable httpd.service
 buildah run "$WORKING_CONTAINER" -- systemctl enable mariadb.service
 buildah run "$WORKING_CONTAINER" -- systemctl enable php-fpm.service
-buildah run "$WORKING_CONTAINER" -- systemctl enable backdrop-add-on-dev-fedora-firstboot.service
+buildah run "$WORKING_CONTAINER" -- systemctl enable backdrop-configure-mariadb.service
+buildah run "$WORKING_CONTAINER" -- systemctl enable backdrop-configure-httpd.service
 buildah run "$WORKING_CONTAINER" -- systemctl enable backdrop-install.service
 
 # Expose port 80, the default HTTP port.

@@ -1,10 +1,10 @@
 # backdrop-add-on-dev-fedora container
 
-The contains the files to create and manage an image and container
-suitable for [Backdrop CMS](https://backdropcms.org/home "Learn more
-about Backdrop CMS.") add-on development.
+The directory contains the files to create and manage an image and
+container suitable for [Backdrop CMS](https://backdropcms.org/home
+"Learn more about Backdrop CMS.") add-on development.
 
-Image has the following features:
+The image has the following features:
 
 * Built on top of the latest Fedora base image.
 * Installs Backdrop via an RPM, see
@@ -15,10 +15,11 @@ Image has the following features:
 * Installs the following development modules: `coder_review`
     `devel` `devel_debug`_`log devel_generate_text_settings`
     `devel_subthemer` `security_review`.
-* Automatically creates and configures a MariaDB database for backdrop
-    on “first boot” of the container.
-* Automatically performs a command-line installation of a backdrop
-  site on “first boot” of the container.
+* Installs backdrop-systemd via an RPM. These systemd services allow
+  the automatic creation of the backdrop database, configuring of
+  HTTPD and installation of the backdrop site. See
+  [backdrop-systemd](https://github.com/danieljrmay/backdrop-systemd "GitHub
+  project page.") for more details.
 * Mounts your hosts custom modules development directory in the
   container.
 * Mounts your hosts custom themes development directory in the
@@ -45,9 +46,9 @@ nano backdrop-add-on-dev-fedora.env
 # which case it will need to be re-created.
 bash create-image-backdrop-add-on-dev-fedora.bash
 
-# Create the container. The container is ready in a couple of seconds,
-# however, you might need to wait a minute for your instance of backdrop
-# to fully install.
+# Create the container. The container is ready in a few of seconds,
+# however, it will take about 30 seconds or so to install the backdrop
+# site.
 bash create-container-backdrop-add-on-dev-fedora.bash
 
 # Explore your container via a Bash shell.
@@ -57,7 +58,9 @@ bash explore-container-backdrop-add-on-dev-fedora.bash
 You should be able to access and log in to your new backdrop site via
 a brower on your host machine by navigating to
 <http://localhost:40080>. The default site administrator username is
-`admin` with password `admin_pwd`.
+`admin` with password `admin_pwd`. Check the values of `PORT`,
+`BACKDROP_ACCOUNT_NAME` and `BACKDROP_ACCOUNT_PASSWORD` in your
+`backdrop-add-on-dev-fedora.env` for any customised values.
 
 Once you have finished with your container you can delete it with
 `bash destroy-container-backdrop-add-on-dev-fedora.bash`.
