@@ -28,6 +28,7 @@ source "$ENVIRONMENT_FILE"
 
 # Echo the values of the variables used by this script.
 echo "HIDE_PASSWORDS=$HIDE_PASSWORDS"
+echo "OPEN_BROWSER=$OPEN_BROWSER"
 echo "IMAGE=$IMAGE"
 echo "CONTAINER=$CONTAINER"
 echo "CONTAINER_HOSTNAME=$CONTAINER_HOSTNAME"
@@ -169,3 +170,8 @@ while true; do
 done
 
 echo -e "\nYour container should be available at http://localhost:${PORT} now."
+
+if [ "$OPEN_BROWSER" = true ]; then
+	echo "Attempting to open http://localhost:${PORT} in your preferred browser."
+	xdg-open http://localhost:$PORT
+fi
